@@ -1,0 +1,11 @@
+@import "bourbon";
+@import "neat";
+@import "base/base";
+
+.page-container {
+  @include outer-container;
+}
+
+header, section {
+  @include span-columns(12);
+}

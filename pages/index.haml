@@ -1,0 +1,21 @@
+- var pdf_x = "&phi;<sub>x</sub>"
+- var pdf_y = "&phi;<sub>y</sub>"
+- var cdf_x = "&phi;<sub>x</sub>"
+- var cdf_y = "&phi;<sub>y</sub>"
+!!! 5
+%html
+  %head
+    %title Latin Hypercube Demo
+    %link(rel="stylesheet" href="assets/global.css")
+    %script(src="assets/global.js")
+  %body
+    .page-container
+      %header
+        %h1 Latin Hypercube Sampling
+        %h2 An interactive demo
+      %section#intro
+      %section#two-distributions
+        %p Say we have two probability distributions !{pdf_x}, !{pdf_y}.
+        .distributions
+          #pdf-x.react-component
+          #pdf-y.react-component
