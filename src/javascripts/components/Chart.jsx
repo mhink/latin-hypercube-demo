@@ -1,43 +1,53 @@
 /** @jsx React.DOM **/
 
+var _     = require("underscore");
 var React = require("react");
+var Reflux = require("reflux");
+var DistributionStore = require("../stores/DistributionStore");
+var $     = require("jquery");
+
 var d3Chart = require('../utils/d3chart.js');
 
 var Chart = module.exports = React.createClass({
   displayName: "Chart",
+  mixins: [Reflux.listenTo(DistributionStore, "onDistributionChange")],
 
-  propTypes: {
-    data: React.PropTypes.array,
-    domain: React.PropTypes.object,
-  },
-
-  getChartState: function() {
+  getInitialState: function() {
     return {
-      data: this.props.data,
-      domain: this.props.domain,
+      sliderVal:  DistributionStore.xMean,
+      data:       DistributionStore.data().x,
+      domain:     DistributionStore.domains().x,
     };
   },
 
+  onDistributionChange: function(payload) {
+    console.log(payload.data[300]);
+    this.setState({
+      sliderVal: payload.mean,
+      data:      payload.data,
+    });
+  },
+
   componentDidMount: function() {
-    var el = this.getDOMNode();
-    d3Chart.create(el, {
-      width: '100%',
-      height: '300px',
-    }, this.getChartState());
-    this.update(el, this.getChartState());
+    d3Chart.create($(this.getDOMNode()).children(".d3Chart")[0], this.state);
   },
-
   componentDidUpdate: function() {
-    var el = this.getDOMNode();
-    d3Chart.update(el, this.getChartState());
+    d3Chart.update($(this.getDOMNode()).children(".d3Chart")[0], this.state);
   },
-
   componentWillUnmount: function() {
-    var el = this.getDOMNode();
-    d3Chart.destroy(el);
+    d3Chart.destroy(this.getDOMNode());
   },
 
   render: function() {
-    return (<div className="d3-chart"></div>);
+    return (
+      <div>
+        <div className="d3Chart" style={{height: '300px'}}></div>
+        <input style={{width: "100%" }} value={this.state.sliderVal} onChange={this.sliderWasMoved} type="range" min="0" max="100" step="1" />
+      </div>
+    );
+  },
+
+  sliderWasMoved: function(event) {
+    DistributionStore.updateXMean(event.target.value);
   }
 });

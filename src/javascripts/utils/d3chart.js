@@ -2,28 +2,63 @@ var d3 = require('d3');
 
 // d3Chart.js
 
+// TODO: dedupe with DistributionStore
+var DOMAIN = { min: 0, max: 100 };
+
 var d3Chart = module.exports = {
-  create: function(el, props, state) {
-    var svg = d3.select(el).append('svg')
+  create: function(el, chartProps) {
+    var scales = this._scales(el, chartProps.domain);
+
+    var xAxis = d3.svg.axis()
+      .scale(scales.i)
+      .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+      .scale(scales.pi)
+      .orient("left");
+
+    var line = d3.svg.line()
+      .x(function(d, i) {
+        return scales.i(d.i);
+      })
+      .y(function(d, i) {
+        return scales.pi(d.pi * 20);
+      });
+
+    var margin = { top: 20, right: 0, bottom: 30, left: 50 },
+        width  = (el.offsetWidth - margin.left - margin.right),
+        height = (el.offsetHeight - margin.top  - margin.bottom);
+
+
+    this.svg = d3.select(el).append('svg')
         .attr('class', 'd3')
-        .attr('width', props.width)
-        .attr('height', props.height);
+        .attr('width',  width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom);
 
-    svg.append('g')
-        .attr('class', 'd3-points');
+    this.svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
 
-    this.update(el, state);
+    this.svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+
+    this.svg.append('g')
+        .attr('class', 'd3-points')
+        .attr('width',  width)
+        .attr('height', height)
+        .attr("transform", "translate(0," + (-margin.top - margin.bottom)+ ")")
+      .append("svg:path").attr("d", line(data));
   },
 
-  update: function(el, state) {
-    // Re-compute the scales, and render the data points
-    var scales = this._scales(el, state.domain);
-    this._drawPoints(el, scales, state.data);
-  },
-
-  destroy: function(el) {
-    // Any clean-up would go here
-    // in this example there is nothing to do
+  update: function(el, chartProps) {
+    this.svg.selectAll('path').data(chartProps.data);
   },
 
   _scales: function(el, domain) {
@@ -31,41 +66,17 @@ var d3Chart = module.exports = {
       return null;
     }
 
-    var width = el.offsetWidth;
-    var height = el.offsetHeight;
+    var width   = el.offsetWidth;
+    var height  = el.offsetHeight;
 
-    var x = d3.scale.linear()
+    var i = d3.scale.linear()
       .range([0, width])
-      .domain(domain.x);
+      .domain(domain.i);
 
-    var y = d3.scale.linear()
+    var pi = d3.scale.linear()
       .range([height, 0])
-      .domain(domain.y);
+      .domain(domain.pi);
 
-    var z = d3.scale.linear()
-      .range([5, 20])
-      .domain([1, 10]);
-
-    return {x: x, y: y, z: z};
-  },
-
-  _drawPoints: function(el, scales, data) {
-    var g = d3.select(el).selectAll('.d3-points');
-
-    var point = g.selectAll('.d3-point')
-      .data(data, function(d) { return d.id; });
-
-    // ENTER
-    point.enter().append('circle')
-        .attr('class', 'd3-point');
-
-    // ENTER & UPDATE
-    point.attr('cx', function(d) { return scales.x(d.x); })
-        .attr('cy', function(d) { return scales.y(d.y); })
-        .attr('r', function(d) { return scales.z(d.z); });
-
-    // EXIT
-    point.exit()
-        .remove();
+    return {i: i, pi: pi};
   },
 };

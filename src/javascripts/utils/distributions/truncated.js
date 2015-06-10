@@ -3,9 +3,6 @@ function TruncatedDistribution(min, max, dist) {
     return new TruncatedDistribution(min, max, dist);
   }
 
-  console.log("---");
-  console.log(dist);
-  
   // Input parameters
   this._dist    = dist;
   this._min     = min || Number.MIN_VALUE;
