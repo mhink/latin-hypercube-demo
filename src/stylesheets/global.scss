@@ -2,37 +2,50 @@
 @import "neat";
 @import "base/base";
 
+@import url(http://fonts.googleapis.com/css?family=Inconsolata);
+
+
 .page-container {
   @include outer-container;
 }
 
 header, section {
-  @include span-columns(12);
+  @include shift(2);
+  @include span-columns(8);
 }
 
-path {
-  stroke: steelblue;
-  stroke-width: 1;
-  fill: none;
+header {
+  text-align: center;
+
+  h1 {
+    margin: 0.25rem;
+  }
 }
 
-.axis {
-  shape-rendering: crispEdges;
+section {
+  h3 {
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid $light-gray;
+  }
+
+  svg {
+    display: block;
+    margin: auto;
+  }
+
+  .math-expr {
+    margin-left: 30%;
+  }
 }
 
-.x.axis line {
-  stroke: lightgrey;
+text {
+  font-family: "Inconsolata", monospace;
 }
 
-.x.axis .minor {
-  stroke-opacity: .5;
+#current-float {
+  font-family: "Inconsolata", monospace;
 }
 
-.x.axis path {
-  display: none;
-}
-
-.y.axis line, .y.axis path {
-  fill: none;
-  stroke: #000;
+.update {
+  fill: #000;
 }

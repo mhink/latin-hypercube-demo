@@ -1,16 +1,13 @@
-React         = require("react")
-Root          = require("./components/Root")
-Chart         = require("./components/Chart")
-Distributions = require("./utils/distributions.js")
-DistributionStore = require("./stores/DistributionStore")
+React                 = require("react")
+ByteList              = require("./components/ByteList")
+FloatList             = require("./components/FloatList")
+ByteDistributionChart = require("./components/ByteDistributionChart")
+RandomByteStore       = require("./stores/RandomByteStore")
+DistributionStore     = require("./stores/DistributionStore")
+
 $ = global.$ = require("jquery")
 
 $(document).ready ->
-  DistributionStore.init({
-    mean:   80,
-    stdev:  12,
-  }, {
-    mean:   31,
-    stdev:  10
-  })
-  React.render(React.createElement(Chart),  $("#pdf-x")[0])
+  React.render(React.createElement(ByteList),  $("#random-byte-samples")[0])
+  React.render(React.createElement(ByteDistributionChart), $("#uniform-sample-rates")[0])
+  React.render(React.createElement(FloatList),  $("#random-float-samples")[0])
