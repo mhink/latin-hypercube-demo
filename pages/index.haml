@@ -12,7 +12,14 @@
   %head
     %title Turning Bytes into Bell Curves
     %link(rel="stylesheet" href="assets/global.css")
+    %script(src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js")
     %script(src="assets/global.js")
+    :javascript
+      WebFont.load({
+        google: {
+          families: ['Inconsolata']
+        }
+      });
   %body
     .page-container
       %header
@@ -25,17 +32,17 @@
 
       %section#sampling-bytes
         %h3 Sampling Bytes
-        %p If we want to sample random numbers, we need a source of randomness. Thanks to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/RandomSource/getRandomValues" target="_blank">Web Cryptography API</a>, I just so happen to have a stream of random bytes right here:
+        %p If we want to sample random numbers, we need a source of randomness. Luckily, I just so happen to have a stream of random bytes right here:
         #random-byte-samples
+        %p These values are sampled from the <a href="https://developer.mozilla.org/en-US/docs/Web/API/RandomSource/getRandomValues" target="_blank">Web Cryptography API</a>.  Throughout this article, this will be our only source of random numbers.
 
+      %section#discrete-uniform
+        %h3 Discrete, Indiscreet
         %p Mathematically, the result of taking one sample of this stream is a random variable <span>!{rv_B} = !{unif}{0, 255}</span>.  Accordingly, the probability of any particular outcome is <span>!{fsub_B} (b) = 1/256</span>, or about <em>0.0039</em>.
         %p In order to get a better idea of what this means, the bar graph below shows all possible outcomes, with their relative rates of occurrence.  If our distribution of bytes is truly uniform, these bars should settle at 0.39%.
 
-        #uniform-sample-rates PLACEHOLDER
-
+        #uniform-sample-rates
       %section#continuity
         %h3 Continuity
-        %p Many useful distributions, including the normal, are continuous- that is to say, they have a . but we obviously can't represent the entirety of !{reals} on a <em>digital</em> computer- we're going to have to settle for an approximation.  If we convert our values to a distribution over the interval [0, 1), we'll be able to translate and scale
-        #random-float-samples 
-      -# %section#two-distributions
-      -#   %p Say we have two probability distributions !{pdf_x}, !{pdf_y}.
+        %p Many useful distributions, including the normal, are continuous- that is to say, they are defined for every single real number. Since we can't represent the entirety of !{reals} on a <em>digital</em> computer, we're going to have to settle for an approximation.
+        #transformed-uniform

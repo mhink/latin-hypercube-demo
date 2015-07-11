@@ -38,8 +38,24 @@ section {
   }
 }
 
-text {
-  font-family: "Inconsolata", monospace;
+#byte-charts > div {
+  @include span-columns(6);
+
+  h4 {
+    margin-bottom: 0;
+    text-align: center;
+  }
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: black;
+  shapeRendering: crispEdges;
+}
+
+svg text {
+  font-family: "Inconsolata", "Courier New", monospace;
 }
 
 #current-float {

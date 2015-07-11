@@ -7,12 +7,8 @@ var RandomByteStore = module.exports = Reflux.createStore({
 
     this._byteCounter   = 0;
     this._bufferIndex   = 0;
-    this._buffer        = new Uint8Array(10);
+    this._buffer        = new Uint8Array(100);
     this._generateBuffer();
-
-    this._interval = setInterval(function() {
-      self.trigger(self.provideByte.apply(self));
-    }, 1000);
   },
   
   provideByte: function() {
@@ -21,6 +17,21 @@ var RandomByteStore = module.exports = Reflux.createStore({
       val: this._provideRandomByte()
     };
   },
+
+  provideBytes: function(n) {
+    if(typeof n !== 'number') {
+      return [this.provideByte()];
+    }
+
+    var toReturn = new Array(n);
+
+    for(var i = 0; i < n; i++) {
+      toReturn[i] = this.provideByte();
+    }
+
+    return toReturn;
+  },
+
 
   _provideCycleByte: function() {
     var cycle = [0x00, 0x01, 0x02, 0x03, 0x04];

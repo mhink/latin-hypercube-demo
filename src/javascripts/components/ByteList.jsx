@@ -1,48 +1,23 @@
 /** @jsx React.DOM **/
 
-var _     = require("underscore");
 var React = require("react/addons");
-var Reflux = require("reflux");
+var _     = require("underscore");
 var d3 = require("d3");
-var RandomByteStore = require("../stores/RandomByteStore");
+
+var ByteConsumer = require("../mixins/ByteConsumer");
+var ByteHelper = require("../utils/ByteHelper");
 
 var ByteList = module.exports = React.createClass({
   displayName: "ByteList",
-  mixins: [Reflux.listenTo(RandomByteStore, "onByteProvided")],
-
-  statics: {
-    datapointKey: function(d) {
-      return d.key;
-    },
-
-    datapointString: function(d) {
-      return "0x" + ((d.val < 0x10) ? "0" : "" ) + d.val.toString(16);
-    },
-
-    datapointPos: function(width, n) {
-      return function(d, i) {
-        return ((n - i) * width);
-      };
-    },
-
-    datapointEntryPos: function(width, n) {
-      return function(d, i) {
-        return 0;
-      };
-    },
-
-    datapointExitPos: function(width, n) {
-      return function(d, i) {
-        return (ByteList.datapointPos(width, n)(d, i) + width);
-      };
-    },
-
-  },
+  mixins: [ByteConsumer],
 
   getDefaultProps: function() {
     return {
-      height:                       50,
+      period:                     1000,
+      bytesPerTick:                  1,
       byteCount:                    12,
+
+      height:                       50,
       byteTextWidth:                48,
       transitionLength:            250,
       transitionEase:   "cubic-in-out",
@@ -55,9 +30,9 @@ var ByteList = module.exports = React.createClass({
     };
   },
 
-  onByteProvided: function(_byte) {
+  onBytesConsumed: function(bytes) {
     var newState = React.addons.update(this.state, {
-      bytes: { $push : [_byte] }
+      bytes: { $push : bytes }
     });
 
     if(newState.bytes.length > this.props.byteCount) {
@@ -68,7 +43,8 @@ var ByteList = module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    var  dom = this.getDOMNode(),
+    var self = this,
+         dom = this.getDOMNode(),
         $dom = $(dom);
 
     d3.select(dom)
@@ -76,6 +52,8 @@ var ByteList = module.exports = React.createClass({
         .attr("width", $dom.width())
         .attr("height", this.props.height)
       .append("g");
+
+    this.setState({ byteConsumerActive: true });
   },
 
   componentDidUpdate: function(prevProps, prevState) {
@@ -86,11 +64,19 @@ var ByteList = module.exports = React.createClass({
                     .select("svg")
                     .select("g"),
         numBytes  = this.state.bytes.length,
-        keyFn     = ByteList.datapointKey,
-        entryFn   = ByteList.datapointEntryPos(btw, numBytes),
-        posFn     = ByteList.datapointPos(btw, numBytes),
-        exitFn    = ByteList.datapointExitPos(btw, numBytes)
-        strFn     = ByteList.datapointString;
+        keyFn     = function(d) {
+                      return d.key;
+                    },
+        strFn     = ByteHelper.byteString,
+        posFn     = function(d, i) {
+                      return ((numBytes - i) * btw);
+                    },
+        entryFn   = function(d, i) {
+                      return 0;
+                    },
+        exitFn    = function(d, i) {
+                      return (posFn(d, i) + btw);
+                    };
 
     var text = svg.selectAll("text")
                   .data(this.state.bytes, keyFn);
