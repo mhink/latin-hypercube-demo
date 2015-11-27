@@ -7,7 +7,7 @@ var RandomByteStore = module.exports = Reflux.createStore({
 
     this._byteCounter   = 0;
     this._bufferIndex   = 0;
-    this._buffer        = new Uint8Array(100);
+    this._buffer        = new Uint8Array(1000);
     this._generateBuffer();
   },
   

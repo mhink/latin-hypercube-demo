@@ -12,7 +12,7 @@ var ByteDistributionChart = module.exports = React.createClass({
   getDefaultProps: function() {
     return {
       period:         10,
-      bytesPerTick:   50,
+      bytesPerTick:   20,
       height:        200,
       xPadding:       50,
       yPadding:       35,
@@ -50,12 +50,17 @@ var ByteDistributionChart = module.exports = React.createClass({
     }));
   },
 
-  componentDidMount: function() {
-    this.setState({width: $(this.getDOMNode()).width()});
-  },
-
   reset: function() {
     this.setState(this.getInitialState());
+  },
+
+  renderSamples: function() {
+    if(this.state.bytesConsumed > 0) {
+      return (<p>Bytes sampled: { this.state.bytesConsumed }</p>);
+    }
+    else {
+      return (<p></p>);
+    }
   },
 
   render: function() {
@@ -70,12 +75,13 @@ var ByteDistributionChart = module.exports = React.createClass({
             title="Observed Distribution"
             data={this.state.observedData}
             />
-        </div>
-        <div>
-          <button onClick={this.toggleConsumer }>
-            { this.state.byteConsumerActive ? "Stop" : "Start" }
-          </button>
-          <button onClick={this.reset}>Reset</button>
+          <div>
+            <button onClick={this.toggleConsumer }>
+              { this.state.byteConsumerActive ? "Stop" : "Start" }
+            </button>
+            <button onClick={this.reset}>Reset</button>
+            { this.renderSamples() }
+          </div>
         </div>
       </div>
     );

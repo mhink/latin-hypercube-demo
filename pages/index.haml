@@ -4,9 +4,17 @@
 - var cdf_y = "&phi;<sub>y</sub>"
 - var unif  = "&#119984;"
 - var rv_B  = "&#119809;"
-- var fsub_B = "&#119891;<sub>"+rv_B+"</sub>";
+- var fn    = "&#119891;"
+- var fsub_B = fn + "<sub>"+rv_B+"</sub>";
 - var norm  = "&#119977;"
-- var reals = "&#119825;"
+- var reals = "&#8477;"
+- var integers = "&#8484;"
+- var elem  = "&#8712;"
+- var set_a = "&#119808;"
+- var set_b = "&#119809;"
+- var lt    = "&lt;";
+- var lte   = "&#8804;";
+
 !!! 5
 %html
   %head
@@ -42,7 +50,30 @@
         %p In order to get a better idea of what this means, the bar graph below shows all possible outcomes, with their relative rates of occurrence.  If our distribution of bytes is truly uniform, these bars should settle at 0.39%.
 
         #uniform-sample-rates
+
       %section#continuity
         %h3 Continuity
         %p Many useful distributions, including the normal, are continuous- that is to say, they are defined for every single real number. Since we can't represent the entirety of !{reals} on a <em>digital</em> computer, we're going to have to settle for an approximation.
+        %p What we'll do here is interpret a sequence of four bytes as a 32-bit unsigned integer, then divide that integer by 2<sup>32</sup>.
+        %aside
+          %h4 Granularity
+          %p You might very well recognize that we have a problem here if we assume that this is "continuous enough" for our needs. Suppose we let 
+          .math
+            %p 
+              <strong>A</strong> = { <em>a</em> !{elem} !{reals} | 0 !{lte} <em>a</em> !{lte} 1, <em>a</em> is representable by a 32-bit float } 
+            %p
+              <strong>A'</strong> = { <em>a</em> !{elem} !{reals} | 0 !{lte} <em>a</em> !{lte} 1, <em>a</em> is <em>NOT</em> representable by a 32-bit float } 
+
+            
+          
         #transformed-uniform
+      %section#bump
+        %br
+        %br
+        %br
+        %br
+        %br
+        %br
+        %br
+        %br
+        %br

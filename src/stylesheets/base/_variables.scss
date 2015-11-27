@@ -33,6 +33,7 @@ $light-gray: #ddd;
 
 // Font Colors
 $base-background-color: #fff;
+$darker-background-color: darken($base-background-color, 3%);
 $base-font-color: $dark-gray;
 $action-color: $blue;
 
